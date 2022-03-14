@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="list_prenda_action" model="ir.actions.act_window">
+            <field name="name">Prendas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tipo.prenda</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="list_marca_action" model="ir.actions.act_window">
+            <field name="name">Marcas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">marca</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="list_tamanno_action" model="ir.actions.act_window">
+            <field name="name">Tamaño</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tamanno</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="list_origen_action" model="ir.actions.act_window">
+            <field name="name">Origen</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">origen</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="list_colores_action" model="ir.actions.act_window">
+            <field name="name">Colores</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">color</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="list_generos_action" model="ir.actions.act_window">
+            <field name="name">Generos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">genero</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</odoo>

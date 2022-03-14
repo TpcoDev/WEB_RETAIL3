@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_assets_pdf" name="Reporte de Conciliacion">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h1>Reporte de Conciliacion</h1>
+
+                            <h6>Id Conciliacion: <span t-esc="data['id_conciliacion']"/></h6>
+                            <h6>Fecha Operación: <span t-esc="data['fecha']"/></h6>
+                            <h6>Ubicación Consultada: <span t-esc="data['ubicacion']"/></h6>
+                            <h6>Solicitada por: <span t-esc="data['user']"/></h6>
+
+
+                            <h4>Resumen Conciliación</h4>
+                            <li>Activos Conciliados: <span t-esc="data['resumen_epc_activo_existe']"/></li>
+                            <li>Activo faltante en Ubicación consultada: <span
+                                    t-esc="data['resumen_epc_activo_faltante']"/></li>
+                            <li>Activo sobrante, esta en otra ubicación: <span
+                                    t-esc="data['resumen_epc_activo_sobrante']"/></li>
+                            <li>Activo no está en ninguna ubicación del sistema: <span
+                                    t-esc="data['resumen_epc_activo_no_esta']"/></li>
+
+                            <br/>
+
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Activos Conciliados</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    <tr t-foreach="data['epc_activo_existe']" t-as="item">
+                                        <td>
+                                            <span t-esc="item"/>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><strong> Activo faltante en Ubicación consultada</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr t-foreach="data['epc_activo_faltante']" t-as="item">
+                                        <td>
+                                            <span t-esc="item"/>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><strong> Activo sobrante, esta en otra ubicación </strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr t-foreach="data['epc_activo_sobrante']" t-as="item">
+                                        <td>
+                                            <span t-esc="item"/>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Activo no esta en ninguna ubicación del sistema</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr t-foreach="data['epc_activo_no_esta']" t-as="item">
+                                        <td>
+                                            <span t-esc="item"/>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="report_assets_conciliation_pdf_action" model="ir.actions.report">
+            <field name="name">Reporte Conciliacion</field>
+            <field name="model">stock.quant</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ws_activos_conciliation.report_assets_pdf</field>
+            <field name="report_file">ws_activos_conciliation.report_assets_pdf</field>
+            <field name="binding_model_id" ref="stock.model_stock_quant"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+    </data>
+</odoo>

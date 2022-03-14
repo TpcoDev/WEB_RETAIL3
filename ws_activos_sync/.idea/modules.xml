@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../buqpren/Venta-Buques-Puerto-Habana/.idea/Venta-Buques-Puerto-Habana.iml" filepath="$PROJECT_DIR$/../../buqpren/Venta-Buques-Puerto-Habana/.idea/Venta-Buques-Puerto-Habana.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../enterprise/.idea/enterprise.iml" filepath="$PROJECT_DIR$/../enterprise/.idea/enterprise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../OpenERP/Odoo_14/odoo-14.0.post20210219a/.idea/odoo-14.0.post20210219a.iml" filepath="$PROJECT_DIR$/../../../OpenERP/Odoo_14/odoo-14.0.post20210219a/.idea/odoo-14.0.post20210219a.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/servicio_web.iml" filepath="$PROJECT_DIR$/.idea/servicio_web.iml" />
+    </modules>
+  </component>
+</project>

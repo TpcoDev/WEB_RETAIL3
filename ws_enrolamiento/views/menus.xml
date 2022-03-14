@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="attr_root" name="WS Attributos" parent="stock.menu_warehouse_config" sequence="70"/>
+        <!-- This Menu Item must have a parenPrendt and an action -->
+        <menuitem id="attr_prenda_menu" name="Prendas" parent="attr_root" action="list_prenda_action" sequence="1"/>
+        <menuitem id="attr_color_menu" name="Colores" parent="attr_root" action="list_colores_action" sequence="2"/>
+        <menuitem id="attr_marca_menu" name="Marcas" parent="attr_root" action="list_marca_action" sequence="3"/>
+        <menuitem id="attr_tamanno_menu" name="Tamaños" parent="attr_root" action="list_tamanno_action" sequence="4"/>
+        <menuitem id="attr_origine_menu" name="Origen" parent="attr_root" action="list_origen_action" sequence="5"/>
+        <menuitem id="attr_genero_menu" name="Generos" parent="attr_root" action="list_generos_action" sequence="6"/>
+
+    </data>
+</odoo>

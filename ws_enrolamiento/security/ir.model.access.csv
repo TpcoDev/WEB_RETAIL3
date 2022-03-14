@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ws_tipo_prenda,ws.tipo.prenda,model_tipo_prenda,,1,1,1,1
+access_ws_marca,ws.marca,model_marca,,1,1,1,1
+access_ws_tamanno,ws.tamanno,model_tamanno,,1,1,1,1
+access_ws_origen,ws.origen,model_origen,,1,1,1,1
+access_ws_color,ws.color,model_color,,1,1,1,1
+access_ws_genero,ws.genero,model_genero,,1,1,1,1
+
+
+
