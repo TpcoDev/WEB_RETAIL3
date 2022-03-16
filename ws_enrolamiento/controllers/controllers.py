@@ -7,6 +7,7 @@ import jsonschema
 from jsonschema import validate
 import json
 import datetime
+import base64
 
 
 class EnrolamientoController(http.Controller):
@@ -96,6 +97,8 @@ class EnrolamientoController(http.Controller):
                     if not obj_genero:
                         obj_genero = genero.sudo().create({'name': detalle['genero']})
 
+                    image_1920 = detalle['imagen']
+
                     product_tmpl_nuevo = product_tmpl.search([('default_code', '=', detalle['SKU'])], limit=1)
                     if not product_tmpl_nuevo:
 
@@ -114,7 +117,8 @@ class EnrolamientoController(http.Controller):
                             'tracking': 'serial',
                             'purchase_ok': True,
                             'sale_ok': True,
-                            'type': 'product'
+                            'type': 'product',
+                            'image_1920': image_1920
 
                         })
                         request.env.cr.commit()
@@ -181,6 +185,7 @@ class EnrolamientoController(http.Controller):
                             'tracking': 'serial',
                             'purchase_ok': True,
                             'sale_ok': True,
+                            'image_1920': image_1920,
                             'type': 'product'
                         })
 
