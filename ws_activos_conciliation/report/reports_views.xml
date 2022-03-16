@@ -26,10 +26,14 @@
 
                             <br/>
 
+
+                            <span>Activos Conciliados</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th><strong>Activos Conciliados</strong></th>
+                                        <th><strong>Productos</strong></th>
+                                        <th>SKU</th>
+                                        <th>EPCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -37,51 +41,76 @@
 
                                     <tr t-foreach="data['epc_activo_existe']" t-as="item">
                                         <td>
-                                            <span t-esc="item"/>
+                                            <span t-esc="item[0]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[1]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[2]"/>
                                         </td>
                                     </tr>
 
                                 </tbody>
                             </table>
 
+                            <span>Activo faltante en Ubicación consultada</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th><strong> Activo faltante en Ubicación consultada</strong></th>
+                                        <th><strong>Productos</strong></th>
+                                        <th>SKU</th>
+                                        <th>EPCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     <tr t-foreach="data['epc_activo_faltante']" t-as="item">
                                         <td>
-                                            <span t-esc="item"/>
+                                            <span t-esc="item[0]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[1]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[2]"/>
                                         </td>
                                     </tr>
 
                                 </tbody>
                             </table>
 
+                            <span>Activo sobrante, esta en otra ubicación</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th><strong> Activo sobrante, esta en otra ubicación </strong></th>
+                                        <th><strong>Productos</strong></th>
+                                        <th>SKU</th>
+                                        <th>EPCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     <tr t-foreach="data['epc_activo_sobrante']" t-as="item">
                                         <td>
-                                            <span t-esc="item"/>
+                                            <span t-esc="item[0]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[1]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item[2]"/>
                                         </td>
                                     </tr>
 
                                 </tbody>
                             </table>
 
+                            <span>Activo no esta en ninguna ubicación del sistema</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th><strong>Activo no esta en ninguna ubicación del sistema</strong></th>
+                                        <th>EPCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>

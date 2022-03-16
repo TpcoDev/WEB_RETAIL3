@@ -102,23 +102,43 @@ class OdooController(http.Controller):
                 # Fill list exixsts
                 for code in epcodes:
                     quant_exists = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id == location_id.id).mapped(
-                        'lot_id.name')
+                        lambda x: x.lot_id.name == code and x.location_id.id == location_id.id)
                     quant_faltantes = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id != location_id.id).mapped('lot_id.name')
+                        lambda x: x.lot_id.name == code and x.location_id.id != location_id.id)
                     quant_not_exists = quants.filtered(lambda x: x.lot_id.name == code)
 
                     if len(quant_exists):
-                        epc_activo_existe.append(quant_exists[0])
+                        for item in quant_exists:
+                            epc_activo_existe.append(
+                                (
+                                    item.product_id.name,
+                                    item.product_id.default_code,
+                                    item.lot_id.name
+                                )
+                            )
                     if len(quant_faltantes):
-                        epc_activo_faltante.append(quant_faltantes[0])
+                        for item in quant_exists:
+                            epc_activo_faltante.append(
+                                (
+                                    item.product_id.name,
+                                    item.product_id.default_code,
+                                    item.lot_id.name
+                                )
+                            )
                     if not len(quant_not_exists):
                         epc_activo_no_esta.append(code)
 
-                epc_activo_sobrante = request.env['stock.quant'].sudo().search(
+                epc_activo_sobrante_ext = request.env['stock.quant'].sudo().search(
                     [('lot_id.name', 'not in', epcodes), ('location_id', '=', location_id.id)])
-                epc_activo_sobrante = epc_activo_sobrante.filtered(lambda x: x.available_quantity > 0).mapped(
-                    'lot_id.name')
+                epc_activo_sobrante_ext = epc_activo_sobrante_ext.filtered(lambda x: x.available_quantity > 0)
+                for item in epc_activo_sobrante_ext:
+                    epc_activo_sobrante.append(
+                        (
+                            item.product_id.name,
+                            item.product_id.default_code,
+                            item.lot_id.name
+                        )
+                    )
 
                 for item in epc_activo_existe:
                     vals['detalleActivos'].append({
