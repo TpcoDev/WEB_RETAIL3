@@ -128,7 +128,7 @@ class EnrolamientoController(http.Controller):
                                                                                 limit=1)
                             if not production_lot_nuevo:
                                 production_lot_nuevo = production_lot.sudo().create({
-                                    'product_id': product_tmpl_nuevo.id,
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
                                     'name': epc['EPCCode'],
                                     'company_id': request.env.user.company_id.id,
                                 })
@@ -140,7 +140,7 @@ class EnrolamientoController(http.Controller):
                                 'date': datetime.datetime.now(),
                                 'name': 'Cantidad de producto actualizada',
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
                                 'state': 'done',
@@ -153,7 +153,7 @@ class EnrolamientoController(http.Controller):
                             request.env['stock.move.line'].sudo().create({
                                'date':datetime.datetime.now(),
                                'reference':'Cantidad de producto actualizada',
-                               'product_id': product_tmpl_nuevo.id,
+                               'product_id': product_tmpl_nuevo.product_variant_id.id,
                                'lot_id': production_lot_nuevo.id,
                                'location_id': 14,
                                'location_dest_id': location_id.id,
@@ -194,7 +194,7 @@ class EnrolamientoController(http.Controller):
                                                                                 limit=1)
                             if not production_lot_nuevo:
                                 production_lot_nuevo = production_lot.sudo().create({
-                                    'product_id': product_tmpl_nuevo.id,
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
                                     'name': epc['EPCCode'],
                                     'company_id': request.env.user.company_id.id,
                                 })
@@ -205,7 +205,7 @@ class EnrolamientoController(http.Controller):
                                 'date': datetime.datetime.now(),
                                 'name': 'Cantidad de producto actualizada',
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
                                 'state': 'done',
@@ -218,7 +218,7 @@ class EnrolamientoController(http.Controller):
                             request.env['stock.move.line'].sudo().create({
                                 'date': datetime.datetime.now(),
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'lot_id': production_lot_nuevo.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
