@@ -12,7 +12,7 @@ import datetime
 class TransferenciaAutomaticaController(http.Controller):
 
     @http.route('/tpco/odoo/ws007', auth="public", type="json", method=['POST'], csrf=False)
-    def lista_ubicaciones(self, **post):
+    def transferencia_automatica(self, **post):
 
         post = json.loads(request.httprequest.data)
         res = {}
@@ -46,10 +46,10 @@ class TransferenciaAutomaticaController(http.Controller):
                 move_line_ids = [(5, 0, 0)]
                 for detalle in post['params']['detalleActivos']:
                     production_lot_obj = production_lot.sudo().search([('name', '=', detalle['EPCCode'])], limit=1)
-                    obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', production_lot_obj.id),('location_id', '=', location_parent_id.id)], limit=1)
+                    obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', production_lot_obj.id),('inventory_quantity', '!=', -1)], order="id desc")
                     if production_lot_obj:
                         producto_id = production_lot_obj.product_id
-                        move_line_ids.append((0, 0, {'product_id': producto_id.id,'location_id':location_parent_id.id,'location_dest_id':location_id.id,'lot_id': production_lot_obj.id,'qty_done':1,'product_uom_id': 1,}))
+                        move_line_ids.append((0, 0, {'product_id': producto_id.id,'location_id':obj_stock_quant[0].location_id.id,'location_dest_id':location_id.id,'lot_id': production_lot_obj.id,'qty_done':1,'product_uom_id': 1,}))
                         detalleActivos.append({
                             "EPCCode": detalle['EPCCode'],
                             "codigo": 0,
@@ -62,10 +62,11 @@ class TransferenciaAutomaticaController(http.Controller):
                             "mensaje": "No se pudo transferir, Activo no esta en el sistema"
                         })
 
+                location_origen = request.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1)
                 stock_picking_nuevo = stock_picking.sudo().create({
                     'product_id': producto_id.id,
                     'picking_type_id': stock_picking_type_obj.id,
-                    'location_id': location_parent_id.id,
+                    'location_id': location_origen.id,
                     'location_dest_id': location_id.id,
                     'move_line_ids_without_package': move_line_ids
                 })
