@@ -53,7 +53,8 @@ class DescarteController(http.Controller):
                 stock_production_lot = request.env['stock.production.lot']
                 stock_quant = request.env['stock.quant']
                 obj_stock_production_lot = stock_production_lot.sudo().search([('name', '=', post['params']['EPCCode'])])
-                obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', obj_stock_production_lot.id)])
+                #obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', obj_stock_production_lot.id)])
+                obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', obj_stock_production_lot.id), ('inventory_quantity', '!=', -1)], order="id desc")
                 if obj_stock_production_lot:
                     obj_stock_scrap = stock_scrap.sudo().search([('lot_id', '=', obj_stock_production_lot.id)])
                     if not obj_stock_scrap:
@@ -61,7 +62,7 @@ class DescarteController(http.Controller):
                              'lot_id':  obj_stock_production_lot.id,
                              'product_id':obj_stock_production_lot.product_id.id,
                              'product_uom_id':1,'date_done':datetime.now(),
-                             'location_id':obj_stock_quant.location_id.id
+                             'location_id':obj_stock_quant[0].location_id.id
                         })
                         obj_scrap.action_validate()
                         mensaje_correcto = {
