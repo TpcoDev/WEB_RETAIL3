@@ -26,11 +26,13 @@ class EnrolamientoController(http.Controller):
         mensaje_correcto = {
             "Token": as_token,
             "RespCode": 0,
+            "EPCCode": "",
             "RespMessage": "Producto se agregó correctamente"
         }
         mensaje_error_existencia = {
             "Token": as_token,
             "RespCode": 1,
+            "EPCCode": "",
             "RespMessage": "Activo ya existe no se enrolará"
         }
 
@@ -98,7 +100,7 @@ class EnrolamientoController(http.Controller):
                         obj_genero = genero.sudo().create({'name': detalle['genero']})
 
                     image_1920 = detalle['imagen']
-
+                    detalleActivos = []
                     product_tmpl_nuevo = product_tmpl.search([('default_code', '=', detalle['SKU'])], limit=1)
                     if not product_tmpl_nuevo:
 
@@ -133,40 +135,49 @@ class EnrolamientoController(http.Controller):
                                     'company_id': request.env.user.company_id.id,
                                 })
 
+                                stock_move_nuevo = request.env['stock.move'].sudo().create({
+                                    'date': datetime.datetime.now(),
+                                    'name': 'Cantidad de producto actualizada',
+                                    'reference': 'Cantidad de producto actualizada',
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
+                                    'location_id': 14,
+                                    'location_dest_id': location_id.id,
+                                    'state': 'done',
+                                    'company_id': request.env.user.company_id.id,
+                                    'product_uom': 1,
+                                    'product_uom_qty': 1,
+                                })
+                                request.env.cr.commit()
+
+                                request.env['stock.move.line'].sudo().create({
+                                    'date': datetime.datetime.now(),
+                                    'reference': 'Cantidad de producto actualizada',
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
+                                    'lot_id': production_lot_nuevo.id,
+                                    'location_id': 14,
+                                    'location_dest_id': location_id.id,
+                                    'qty_done': 1,
+                                    'state': 'done',
+                                    'company_id': request.env.user.company_id.id,
+                                    'product_uom_id': 1,
+                                    'move_id': stock_move_nuevo.id,
+                                    'reference': 'Inv. Adj.: Inventory'
+                                })
+                                request.env.cr.commit()
+
+                                mensaje_correcto['EPCCode'] = epc['EPCCode']
+                                detalleActivos.append(mensaje_correcto)
+
                             else:
-                                return mensaje_error_existencia
+                                mensaje_error_existencia['EPCCode'] = epc['EPCCode']
+                                detalleActivos.append(mensaje_error_existencia)
 
-                            stock_move_nuevo = request.env['stock.move'].sudo().create({
-                                'date': datetime.datetime.now(),
-                                'name': 'Cantidad de producto actualizada',
-                                'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.product_variant_id.id,
-                                'location_id': 14,
-                                'location_dest_id': location_id.id,
-                                'state': 'done',
-                                'company_id': request.env.user.company_id.id,
-                                'product_uom': 1,
-                                'product_uom_qty': 1,
-                            })
-                            request.env.cr.commit()
 
-                            request.env['stock.move.line'].sudo().create({
-                               'date':datetime.datetime.now(),
-                               'reference':'Cantidad de producto actualizada',
-                               'product_id': product_tmpl_nuevo.product_variant_id.id,
-                               'lot_id': production_lot_nuevo.id,
-                               'location_id': 14,
-                               'location_dest_id': location_id.id,
-                               'qty_done':1,
-                               'state': 'done',
-                               'company_id': request.env.user.company_id.id,
-                               'product_uom_id': 1,
-                               'move_id': stock_move_nuevo.id,
-                               'reference': 'Inv. Adj.: Inventory'
-                            })
-                            request.env.cr.commit()
 
-                        return mensaje_correcto
+
+                        return {
+                            "detalleActivos": detalleActivos
+                        }
 
 
 
@@ -198,40 +209,50 @@ class EnrolamientoController(http.Controller):
                                     'name': epc['EPCCode'],
                                     'company_id': request.env.user.company_id.id,
                                 })
+
+                                stock_move_nuevo = request.env['stock.move'].sudo().create({
+                                    'date': datetime.datetime.now(),
+                                    'name': 'Cantidad de producto actualizada',
+                                    'reference': 'Cantidad de producto actualizada',
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
+                                    'location_id': 14,
+                                    'location_dest_id': location_id.id,
+                                    'state': 'done',
+                                    'company_id': request.env.user.company_id.id,
+                                    'product_uom': 1,
+                                    'product_uom_qty': 1,
+                                })
+                                request.env.cr.commit()
+
+                                request.env['stock.move.line'].sudo().create({
+                                    'date': datetime.datetime.now(),
+                                    'reference': 'Cantidad de producto actualizada',
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
+                                    'lot_id': production_lot_nuevo.id,
+                                    'location_id': 14,
+                                    'location_dest_id': location_id.id,
+                                    'qty_done': 1,
+                                    'state': 'done',
+                                    'company_id': request.env.user.company_id.id,
+                                    'product_uom_id': 1,
+                                    'move_id': stock_move_nuevo.id,
+                                    'reference': 'Inv. Adj.: Inventory'
+                                })
+                                request.env.cr.commit()
+
+                                mensaje_correcto['EPCCode'] = epc['EPCCode']
+                                detalleActivos.append(mensaje_correcto)
+
                             else:
-                                return mensaje_error_existencia
+                                mensaje_error_existencia['EPCCode'] = epc['EPCCode']
+                                detalleActivos.append(mensaje_error_existencia)
 
-                            stock_move_nuevo = request.env['stock.move'].sudo().create({
-                                'date': datetime.datetime.now(),
-                                'name': 'Cantidad de producto actualizada',
-                                'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.product_variant_id.id,
-                                'location_id': 14,
-                                'location_dest_id': location_id.id,
-                                'state': 'done',
-                                'company_id': request.env.user.company_id.id,
-                                'product_uom': 1,
-                                'product_uom_qty': 1,
-                            })
-                            request.env.cr.commit()
 
-                            request.env['stock.move.line'].sudo().create({
-                                'date': datetime.datetime.now(),
-                                'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.product_variant_id.id,
-                                'lot_id': production_lot_nuevo.id,
-                                'location_id': 14,
-                                'location_dest_id': location_id.id,
-                                'qty_done': 1,
-                                'state': 'done',
-                                'company_id': request.env.user.company_id.id,
-                                'product_uom_id': 1,
-                                'move_id': stock_move_nuevo.id,
-                                'reference': 'Inv. Adj.: Inventory'
-                            })
-                            request.env.cr.commit()
 
-                        return mensaje_correcto
+
+                        return {
+                            "detalleActivos": detalleActivos
+                        }
 
 
 
