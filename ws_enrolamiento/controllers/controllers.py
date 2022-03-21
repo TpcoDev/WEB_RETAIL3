@@ -7,6 +7,7 @@ import jsonschema
 from jsonschema import validate
 import json
 import datetime
+import base64
 
 
 class EnrolamientoController(http.Controller):
@@ -96,6 +97,8 @@ class EnrolamientoController(http.Controller):
                     if not obj_genero:
                         obj_genero = genero.sudo().create({'name': detalle['genero']})
 
+                    image_1920 = detalle['imagen']
+
                     product_tmpl_nuevo = product_tmpl.search([('default_code', '=', detalle['SKU'])], limit=1)
                     if not product_tmpl_nuevo:
 
@@ -114,7 +117,8 @@ class EnrolamientoController(http.Controller):
                             'tracking': 'serial',
                             'purchase_ok': True,
                             'sale_ok': True,
-                            'type': 'product'
+                            'type': 'product',
+                            'image_1920': image_1920
 
                         })
                         request.env.cr.commit()
@@ -124,7 +128,7 @@ class EnrolamientoController(http.Controller):
                                                                                 limit=1)
                             if not production_lot_nuevo:
                                 production_lot_nuevo = production_lot.sudo().create({
-                                    'product_id': product_tmpl_nuevo.id,
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
                                     'name': epc['EPCCode'],
                                     'company_id': request.env.user.company_id.id,
                                 })
@@ -136,7 +140,7 @@ class EnrolamientoController(http.Controller):
                                 'date': datetime.datetime.now(),
                                 'name': 'Cantidad de producto actualizada',
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
                                 'state': 'done',
@@ -149,7 +153,7 @@ class EnrolamientoController(http.Controller):
                             request.env['stock.move.line'].sudo().create({
                                'date':datetime.datetime.now(),
                                'reference':'Cantidad de producto actualizada',
-                               'product_id': product_tmpl_nuevo.id,
+                               'product_id': product_tmpl_nuevo.product_variant_id.id,
                                'lot_id': production_lot_nuevo.id,
                                'location_id': 14,
                                'location_dest_id': location_id.id,
@@ -181,6 +185,7 @@ class EnrolamientoController(http.Controller):
                             'tracking': 'serial',
                             'purchase_ok': True,
                             'sale_ok': True,
+                            'image_1920': image_1920,
                             'type': 'product'
                         })
 
@@ -189,7 +194,7 @@ class EnrolamientoController(http.Controller):
                                                                                 limit=1)
                             if not production_lot_nuevo:
                                 production_lot_nuevo = production_lot.sudo().create({
-                                    'product_id': product_tmpl_nuevo.id,
+                                    'product_id': product_tmpl_nuevo.product_variant_id.id,
                                     'name': epc['EPCCode'],
                                     'company_id': request.env.user.company_id.id,
                                 })
@@ -200,7 +205,7 @@ class EnrolamientoController(http.Controller):
                                 'date': datetime.datetime.now(),
                                 'name': 'Cantidad de producto actualizada',
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
                                 'state': 'done',
@@ -213,7 +218,7 @@ class EnrolamientoController(http.Controller):
                             request.env['stock.move.line'].sudo().create({
                                 'date': datetime.datetime.now(),
                                 'reference': 'Cantidad de producto actualizada',
-                                'product_id': product_tmpl_nuevo.id,
+                                'product_id': product_tmpl_nuevo.product_variant_id.id,
                                 'lot_id': production_lot_nuevo.id,
                                 'location_id': 14,
                                 'location_dest_id': location_id.id,
