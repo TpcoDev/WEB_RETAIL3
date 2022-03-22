@@ -46,8 +46,9 @@ class TransferenciaAutomaticaController(http.Controller):
                 move_line_ids = [(5, 0, 0)]
                 for detalle in post['params']['detalleActivos']:
                     production_lot_obj = production_lot.sudo().search([('name', '=', detalle['EPCCode'])], limit=1)
-                    obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', production_lot_obj.id),('inventory_quantity', '!=', -1)], order="id desc")
                     if production_lot_obj:
+                        obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', production_lot_obj.id), ('inventory_quantity', '!=', -1)], order="id desc")
+
                         producto_id = production_lot_obj.product_id
                         move_line_ids.append((0, 0, {'product_id': producto_id.id,'location_id':obj_stock_quant[0].location_id.id,'location_dest_id':location_id.id,'lot_id': production_lot_obj.id,'qty_done':1,'product_uom_id': 1,}))
                         detalleActivos.append({
@@ -62,27 +63,38 @@ class TransferenciaAutomaticaController(http.Controller):
                             "mensaje": "No se pudo transferir, Activo no esta en el sistema"
                         })
 
-                location_origen = request.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1)
-                stock_picking_nuevo = stock_picking.sudo().create({
-                    'product_id': producto_id.id,
-                    'picking_type_id': stock_picking_type_obj.id,
-                    'location_id': location_origen.id,
-                    'location_dest_id': location_id.id,
-                    'move_line_ids_without_package': move_line_ids
-                })
-                request.env.cr.commit()
+                if len(move_line_ids)>1:
+                    location_origen = request.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1)
+                    stock_picking_nuevo = stock_picking.sudo().create({
+                        'product_id': producto_id.id,
+                        'picking_type_id': stock_picking_type_obj.id,
+                        'location_id': location_origen.id,
+                        'location_dest_id': location_id.id,
+                        'move_line_ids_without_package': move_line_ids
+                    })
+                    request.env.cr.commit()
 
-                stock_picking_nuevo.action_confirm()
-                stock_picking_nuevo.button_validate()
+                    stock_picking_nuevo.action_confirm()
+                    stock_picking_nuevo.button_validate()
 
-                return {
-                    "idTransferencia": stock_picking_nuevo.id,
-                    "fechaOperacion": datetime.datetime.now(),
-                    "ubicacionPadre": location_parent_id.name,
-                    "ubicacion": location_id.name,
-                    "user": post['params']['user'],
-                    "detalleActivos": detalleActivos
-                }
+                    return {
+                        "idTransferencia": stock_picking_nuevo.id,
+                        "fechaOperacion": datetime.datetime.now(),
+                        "ubicacionPadre": location_parent_id.name,
+                        "ubicacion": location_id.name,
+                        "user": post['params']['user'],
+                        "detalleActivos": detalleActivos
+                    }
+                else:
+                    return {
+                        "idTransferencia": "",
+                        "fechaOperacion": datetime.datetime.now(),
+                        "ubicacionPadre": location_parent_id.name,
+                        "ubicacion": location_id.name,
+                        "user": post['params']['user'],
+                        "detalleActivos": detalleActivos
+                    }
+
 
 
 
