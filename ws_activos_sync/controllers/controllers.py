@@ -56,19 +56,25 @@ class OdooController(http.Controller):
                     'detalleActivos': []
                 }
 
-                domain = []
+                domain = [('location_id.usage', '=', 'internal')]
                 location_parent_id = None
                 location_id = None
+                location_obj = request.env['stock.location'].sudo()
                 if not post['ubicacion'] == 'todos':
-                    location_parent_id = request.env['stock.location'].sudo().search(
+                    location_parent_id = location_obj.search(
                         [('name', '=', post['ubicacionPadre'])], limit=1)
-                    location_id = request.env['stock.location'].sudo().search([('name', '=', post['ubicacion'])],
-                                                                              limit=1)
+                    location_id = location_obj.search([('name', '=', post['ubicacion'])],
+                                                      limit=1)
                     if location_parent_id:
-                        location_id = request.env['stock.location'].sudo().search(
+                        location_id = location_obj.search(
                             [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id)],
                             limit=1)
-                    domain.append(('location_id', '=', location_id.id))
+
+                    location_childs = location_obj.search([('location_id', '=', location_id.id)])
+                    if len(location_childs) > 0:
+                        domain.append(('location_id', 'in', location_childs.ids))
+                    else:
+                        domain.append(('location_id', '=', location_id.id))
 
                 quants = request.env['stock.quant'].sudo().search(domain)
 

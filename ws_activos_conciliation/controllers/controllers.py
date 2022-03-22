@@ -80,15 +80,17 @@ class OdooController(http.Controller):
                 location_id = None
 
                 location_parent_id = request.env['stock.location'].sudo().search(
-                    [('name', '=', post['ubicacionPadre'])], limit=1)
-                location_id = request.env['stock.location'].sudo().search([('name', '=', post['ubicacion'])],
-                                                                          limit=1)
+                    [('name', '=', post['ubicacionPadre']), ('usage', '=', 'internal')], limit=1)
+                location_id = request.env['stock.location'].sudo().search(
+                    [('name', '=', post['ubicacion']), ('usage', '=', 'internal')],
+                    limit=1)
                 if location_parent_id:
                     location_id = request.env['stock.location'].sudo().search(
-                        [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id)],
+                        [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id),
+                         ('usage', '=', 'internal')],
                         limit=1)
 
-                quants = request.env['stock.quant'].sudo().search([])
+                quants = request.env['stock.quant'].sudo().search([('location_id.usage', '=', 'internal'),])
 
                 epcodes = []
                 for detalle in post['detalleActivos']:
@@ -102,9 +104,11 @@ class OdooController(http.Controller):
                 # Fill list exixsts
                 for code in epcodes:
                     quant_exists = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id == location_id.id)
+                        lambda
+                            x: x.lot_id.name == code and x.location_id.id == location_id.id)
                     quant_faltantes = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id != location_id.id)
+                        lambda
+                            x: x.lot_id.name == code and x.location_id.id != location_id.id)
                     quant_not_exists = quants.filtered(lambda x: x.lot_id.name == code)
 
                     if len(quant_exists):
