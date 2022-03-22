@@ -110,12 +110,15 @@
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
+                                        <th><strong>Productos</strong></th>
+                                        <th>SKU</th>
                                         <th>EPCode</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     <tr t-foreach="data['epc_activo_no_esta']" t-as="item">
+                                        <td></td><td></td>
                                         <td>
                                             <span t-esc="item"/>
                                         </td>

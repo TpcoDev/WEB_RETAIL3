@@ -23,10 +23,10 @@ _logger = logging.getLogger(__name__)
 from datetime import timedelta, datetime, date
 
 MESSAGES = {
-    '0': 'Activo existe',
-    '1': 'Activo faltante en inventario',
-    '2': 'Activo sobrante en inventario',
-    '9': 'Activo no esta en el sistema',
+    '0': 'Activo conciliados',
+    '1': 'Activo faltante en la ubicacion consultada',
+    '2': 'Activo sobrante, esta en otra ubicacion',
+    '9': 'Activo no esta en ninguna ubicacion del sistema',
 }
 
 
@@ -110,6 +110,7 @@ class OdooController(http.Controller):
                     quant_faltantes = quants.filtered(
                         lambda
                             x: x.lot_id.name == code and x.location_id.id != location_id.id)
+
                     quant_not_exists = quants.filtered(lambda x: x.lot_id.name == code)
 
                     if len(quant_exists):
@@ -122,7 +123,7 @@ class OdooController(http.Controller):
                                 )
                             )
                     if len(quant_faltantes):
-                        for item in quant_exists:
+                        for item in quant_faltantes:
                             epc_activo_faltante.append(
                                 (
                                     item.product_id.name,
