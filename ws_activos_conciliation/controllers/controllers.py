@@ -60,12 +60,13 @@ class OdooController(http.Controller):
 
             if user_id and post['params']:
                 post = post['params']
+                user = request.env['res.users'].sudo().browse(user_id)
                 vals = {
                     'idConciliacion': '',
                     'fechaOperacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'ubicacion': post['ubicacion'],
                     'ubicacionPadre': post['ubicacionPadre'],
-                    'user': post['user'],
+                    'user': user.name,
                     'detalleActivos': []
                 }
 
