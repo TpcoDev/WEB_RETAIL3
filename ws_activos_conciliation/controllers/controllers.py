@@ -23,10 +23,10 @@ _logger = logging.getLogger(__name__)
 from datetime import timedelta, datetime, date
 
 MESSAGES = {
-    '0': 'Activo existe',
-    '1': 'Activo faltante en inventario',
-    '2': 'Activo sobrante en inventario',
-    '9': 'Activo no esta en el sistema',
+    '0': 'Activo conciliados',
+    '1': 'Activo faltante en la ubicacion consultada',
+    '2': 'Activo sobrante, esta en otra ubicacion',
+    '9': 'Activo no esta en ninguna ubicacion del sistema',
 }
 
 
@@ -60,12 +60,13 @@ class OdooController(http.Controller):
 
             if user_id and post['params']:
                 post = post['params']
+                user = request.env['res.users'].sudo().browse(user_id)
                 vals = {
                     'idConciliacion': '',
                     'fechaOperacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'ubicacion': post['ubicacion'],
                     'ubicacionPadre': post['ubicacionPadre'],
-                    'user': post['user'],
+                    'user': user.name,
                     'detalleActivos': []
                 }
 
@@ -80,15 +81,17 @@ class OdooController(http.Controller):
                 location_id = None
 
                 location_parent_id = request.env['stock.location'].sudo().search(
-                    [('name', '=', post['ubicacionPadre'])], limit=1)
-                location_id = request.env['stock.location'].sudo().search([('name', '=', post['ubicacion'])],
-                                                                          limit=1)
+                    [('name', '=', post['ubicacionPadre']), ('usage', '=', 'internal')], limit=1)
+                location_id = request.env['stock.location'].sudo().search(
+                    [('name', '=', post['ubicacion']), ('usage', '=', 'internal')],
+                    limit=1)
                 if location_parent_id:
                     location_id = request.env['stock.location'].sudo().search(
-                        [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id)],
+                        [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id),
+                         ('usage', '=', 'internal')],
                         limit=1)
 
-                quants = request.env['stock.quant'].sudo().search([])
+                quants = request.env['stock.quant'].sudo().search([('location_id.usage', '=', 'internal'),])
 
                 epcodes = []
                 for detalle in post['detalleActivos']:
@@ -102,9 +105,12 @@ class OdooController(http.Controller):
                 # Fill list exixsts
                 for code in epcodes:
                     quant_exists = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id == location_id.id)
+                        lambda
+                            x: x.lot_id.name == code and x.location_id.id == location_id.id)
                     quant_faltantes = quants.filtered(
-                        lambda x: x.lot_id.name == code and x.location_id.id != location_id.id)
+                        lambda
+                            x: x.lot_id.name == code and x.location_id.id != location_id.id)
+
                     quant_not_exists = quants.filtered(lambda x: x.lot_id.name == code)
 
                     if len(quant_exists):
@@ -117,7 +123,7 @@ class OdooController(http.Controller):
                                 )
                             )
                     if len(quant_faltantes):
-                        for item in quant_exists:
+                        for item in quant_faltantes:
                             epc_activo_faltante.append(
                                 (
                                     item.product_id.name,

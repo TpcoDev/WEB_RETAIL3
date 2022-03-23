@@ -56,25 +56,35 @@ class OdooController(http.Controller):
                     'detalleActivos': []
                 }
 
-                domain = []
+                domain = [('location_id.usage', '=', 'internal')]
                 location_parent_id = None
                 location_id = None
+                location_obj = request.env['stock.location'].sudo()
                 if not post['ubicacion'] == 'todos':
-                    location_parent_id = request.env['stock.location'].sudo().search(
+                    location_parent_id = location_obj.search(
                         [('name', '=', post['ubicacionPadre'])], limit=1)
-                    location_id = request.env['stock.location'].sudo().search([('name', '=', post['ubicacion'])],
-                                                                              limit=1)
+                    location_id = location_obj.search([('name', '=', post['ubicacion'])],
+                                                      limit=1)
                     if location_parent_id:
-                        location_id = request.env['stock.location'].sudo().search(
+                        location_id = location_obj.search(
                             [('name', '=', post['ubicacion']), ('location_id', '=', location_parent_id.id)],
                             limit=1)
-                    domain.append(('location_id', '=', location_id.id))
+
+                    location_childs = location_obj.search([('location_id', '=', location_id.id)])
+                    if len(location_childs) > 0:
+                        domain.append(('location_id', 'in', location_childs.ids))
+                    else:
+                        domain.append(('location_id', '=', location_id.id))
 
                 quants = request.env['stock.quant'].sudo().search(domain)
 
                 for quant in quants:
                     product_id = quant.product_id
                     lot = quant.lot_id
+                    loc_id = quant.location_id
+                    loc_parent = None
+                    if loc_id:
+                        loc_parent = loc_id.location_id
 
                     vals['detalleActivos'].append({
                         'EPCCode': lot.name if lot else '',
@@ -86,8 +96,8 @@ class OdooController(http.Controller):
                         'origen': product_id.origen_id.name,
                         'color': product_id.color_id.name,
                         'genero': product_id.genero_id.name,
-                        'ubicacionPadre': location_parent_id.name if location_parent_id else '',
-                        'ubicacion': location_id.name if location_id else '',
+                        'ubicacionPadre': loc_parent.name if loc_parent else '',
+                        'ubicacion': loc_id.name if loc_id else '',
                     })
 
                 return vals
