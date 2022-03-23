@@ -58,27 +58,34 @@ class OdooController(http.Controller):
                     location_parent_id = None
                     product_id = lot.product_id
 
-                    for quant in lot.quant_ids:
+                    for quant in lot.quant_ids.filtered(lambda r: r.location_id.usage == 'internal'):
                         location_id = quant.location_id
                         location_parent_id = quant.location_id.location_id
 
-                    vals.update({
-                        'idHandheld': post['idHandheld'],
-                        'ubicacionPadre': location_parent_id.name,
-                        'ubicacion': location_id.name,
-                        'EPCCode': lot.name,
-                        'SKU': product_id.default_code,
-                        'nombreActivo': product_id.name,
-                        'tipoPrenda': product_id.tipo_prenda_id.name,
-                        'marca': product_id.marca_id.name,
-                        'tamaño': product_id.tamanno_id.name,
-                        'origen': product_id.origen_id.name,
-                        'color': product_id.color_id.name,
-                        'genero': product_id.genero_id.name,
-                        'codigo': 0,
-                        'mensaje': 'Activo existente en el inventario',
+                    if location_id:
+                        vals.update({
+                            'idHandheld': post['idHandheld'],
+                            'ubicacionPadre': location_parent_id.name,
+                            'ubicacion': location_id.name,
+                            'EPCCode': lot.name,
+                            'SKU': product_id.default_code,
+                            'nombreActivo': product_id.name,
+                            'tipoPrenda': product_id.tipo_prenda_id.name,
+                            'marca': product_id.marca_id.name,
+                            'tamaño': product_id.tamanno_id.name,
+                            'origen': product_id.origen_id.name,
+                            'color': product_id.color_id.name,
+                            'genero': product_id.genero_id.name,
+                            'codigo': 0,
+                            'mensaje': 'Activo existente en el inventario',
 
-                    })
+                        })
+                    else:
+                        vals.update({
+                            'idHandheld': post['idHandheld'],
+                            'codigo': -1,
+                            'mensaje': 'Activo no existe en el inventario',
+                        })
                 else:
                     vals.update({
                         'idHandheld': post['idHandheld'],
