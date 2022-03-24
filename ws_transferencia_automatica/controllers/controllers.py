@@ -48,14 +48,20 @@ class TransferenciaAutomaticaController(http.Controller):
                     production_lot_obj = production_lot.sudo().search([('name', '=', detalle['EPCCode'])], limit=1)
                     if production_lot_obj:
                         obj_stock_quant = stock_quant.sudo().search([('lot_id', '=', production_lot_obj.id), ('inventory_quantity', '!=', -1)], order="id desc")
-
-                        producto_id = production_lot_obj.product_id
-                        move_line_ids.append((0, 0, {'product_id': producto_id.id,'location_id':obj_stock_quant[0].location_id.id,'location_dest_id':location_id.id,'lot_id': production_lot_obj.id,'qty_done':1,'product_uom_id': 1,}))
-                        detalleActivos.append({
-                            "EPCCode": detalle['EPCCode'],
-                            "codigo": 0,
-                            "mensaje": "Activo transferido"
-                        })
+                        if obj_stock_quant[0].location_id.id != 16:
+                            producto_id = production_lot_obj.product_id
+                            move_line_ids.append((0, 0, {'product_id': producto_id.id,'location_id':obj_stock_quant[0].location_id.id,'location_dest_id':location_id.id,'lot_id': production_lot_obj.id,'qty_done':1,'product_uom_id': 1,}))
+                            detalleActivos.append({
+                                "EPCCode": detalle['EPCCode'],
+                                "codigo": 0,
+                                "mensaje": "Activo transferido"
+                            })
+                        else:
+                            detalleActivos.append({
+                                "EPCCode": detalle['EPCCode'],
+                                "codigo": 0,
+                                "mensaje": "Activo desechado no se transfiere"
+                            })
                     else:
                         detalleActivos.append({
                             "EPCCode": detalle['EPCCode'],
