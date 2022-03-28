@@ -23,10 +23,10 @@ _logger = logging.getLogger(__name__)
 from datetime import timedelta, datetime, date
 
 MESSAGES = {
-    '0': 'Activo conciliados',
-    '1': 'Activo faltante en la ubicacion consultada',
-    '2': 'Activo sobrante, esta en otra ubicacion',
-    '9': 'Activo no esta en ninguna ubicacion del sistema',
+    '0': 'Activos conciliados',
+    '1': 'Activos faltantes',
+    '2': 'Activos sobrantes',
+    '9': 'Activos sobrantes no enrolados',
 }
 
 

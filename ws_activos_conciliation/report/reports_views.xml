@@ -17,11 +17,11 @@
 
                             <h4>Resumen Conciliación</h4>
                             <li>Activos Conciliados: <span t-esc="data['resumen_epc_activo_existe']"/></li>
-                            <li>Activo faltante en Ubicación consultada: <span
+                            <li>Activos Faltantes: <span
                                     t-esc="data['resumen_epc_activo_faltante']"/></li>
-                            <li>Activo sobrante, esta en otra ubicación: <span
+                            <li>Activos Sobrantes: <span
                                     t-esc="data['resumen_epc_activo_sobrante']"/></li>
-                            <li>Activo no está en ninguna ubicación del sistema: <span
+                            <li>Activos sobrantes no enrolados: <span
                                     t-esc="data['resumen_epc_activo_no_esta']"/></li>
 
                             <br/>
@@ -54,7 +54,7 @@
                                 </tbody>
                             </table>
 
-                            <span>Activo faltante en Ubicación consultada</span>
+                            <span>Activos Faltantes</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
@@ -80,7 +80,7 @@
                                 </tbody>
                             </table>
 
-                            <span>Activo sobrante, esta en otra ubicación</span>
+                            <span>Activos Sobrantes</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
@@ -106,7 +106,7 @@
                                 </tbody>
                             </table>
 
-                            <span>Activo no esta en ninguna ubicación del sistema</span>
+                            <span>Activos sobrantes no enrolados</span>
                             <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
