@@ -107,7 +107,7 @@ class OdooController(http.Controller):
                     quant_exists = quants.filtered(
                         lambda
                             x: x.lot_id.name == code and x.location_id.id == location_id.id)
-                    quant_faltantes = quants.filtered(
+                    epc_activo_sobrante_ext = quants.filtered(
                         lambda
                             x: x.lot_id.name == code and x.location_id.id != location_id.id)
 
@@ -122,9 +122,9 @@ class OdooController(http.Controller):
                                     item.lot_id.name
                                 )
                             )
-                    if len(quant_faltantes):
-                        for item in quant_faltantes:
-                            epc_activo_faltante.append(
+                    if len(epc_activo_sobrante_ext):
+                        for item in epc_activo_sobrante_ext:
+                            epc_activo_sobrante.append(
                                 (
                                     item.product_id.name,
                                     item.product_id.default_code,
@@ -134,11 +134,11 @@ class OdooController(http.Controller):
                     if not len(quant_not_exists):
                         epc_activo_no_esta.append(code)
 
-                epc_activo_sobrante_ext = request.env['stock.quant'].sudo().search(
+                quant_faltantes = request.env['stock.quant'].sudo().search(
                     [('lot_id.name', 'not in', epcodes), ('location_id', '=', location_id.id)])
-                epc_activo_sobrante_ext = epc_activo_sobrante_ext.filtered(lambda x: x.available_quantity > 0)
-                for item in epc_activo_sobrante_ext:
-                    epc_activo_sobrante.append(
+                quant_faltantes = quant_faltantes.filtered(lambda x: x.available_quantity > 0)
+                for item in quant_faltantes:
+                    epc_activo_faltante.append(
                         (
                             item.product_id.name,
                             item.product_id.default_code,
