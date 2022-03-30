@@ -165,15 +165,22 @@ class EnrolamientoController(http.Controller):
                                 })
                                 request.env.cr.commit()
 
-                                mensaje_correcto['EPCCode'] = epc['EPCCode']
-                                detalleActivos.append(mensaje_correcto)
+                                detalleActivos.append(
+                                    {"Token": as_token,
+                                     "RespCode": 0,
+                                     "EPCCode": epc['EPCCode'],
+                                     "RespMessage": "Producto se agregó correctamente"
+                                     }
+                                )
 
                             else:
                                 mensaje_error_existencia['EPCCode'] = epc['EPCCode']
-                                detalleActivos.append(mensaje_error_existencia)
-
-
-
+                                detalleActivos.append({
+                                    "Token": as_token,
+                                    "RespCode": 1,
+                                    "EPCCode": epc['EPCCode'],
+                                    "RespMessage": "Activo ya existe no se enrolará"
+                                })
 
                         return {
                             "detalleActivos": detalleActivos
@@ -240,15 +247,24 @@ class EnrolamientoController(http.Controller):
                                 })
                                 request.env.cr.commit()
 
-                                mensaje_correcto['EPCCode'] = epc['EPCCode']
-                                detalleActivos.append(mensaje_correcto)
+                                mensaje_correcto.update({'EPCCode': epc['EPCCode']})
+                                detalleActivos.append({
+                                    "Token": as_token,
+                                    "RespCode": 0,
+                                    "EPCCode": epc['EPCCode'],
+                                    "RespMessage": "Producto se agregó correctamente"
+                                })
 
                             else:
                                 mensaje_error_existencia['EPCCode'] = epc['EPCCode']
-                                detalleActivos.append(mensaje_error_existencia)
-
-
-
+                                detalleActivos.append(
+                                    {
+                                        "Token": as_token,
+                                        "RespCode": 1,
+                                        "EPCCode": epc['EPCCode'],
+                                        "RespMessage": "Activo ya existe no se enrolará"
+                                    }
+                                )
 
                         return {
                             "detalleActivos": detalleActivos
