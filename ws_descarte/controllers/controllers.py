@@ -32,7 +32,7 @@ class DescarteController(http.Controller):
         mensaje_error_existencia = {
             "Token": as_token,
             "RespCode": -3,
-            "RespMessage": "Rechazado: Ya existe el registro que pretende crear"
+            "RespMessage": "Activo ya estaba descartado"
         }
 
 
